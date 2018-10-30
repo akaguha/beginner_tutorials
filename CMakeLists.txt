@@ -7,7 +7,7 @@ project(beginner_tutorials)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp std_msgs rospy)
+find_package(catkin REQUIRED COMPONENTS roscpp std_msgs)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -131,6 +131,8 @@ include ${catkin_INCLUDE_DIRS}
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/agitr_node.cpp)
+add_executable(pub src/publisher.cpp)
+add_executable(sub src/subscriber.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -146,6 +148,8 @@ include ${catkin_INCLUDE_DIRS}
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+target_link_libraries(pub ${catkin_LIBRARIES})
+target_link_libraries(sub ${catkin_LIBRARIES})
 
 
 #############
