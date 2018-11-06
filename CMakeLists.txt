@@ -7,7 +7,7 @@ project(beginner_tutorials)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp std_msgs)
+find_package(catkin REQUIRED COMPONENTS roscpp std_msgs message_generation)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -50,11 +50,10 @@ find_package(catkin REQUIRED COMPONENTS roscpp std_msgs)
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+  FILES
+  changeString.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -64,10 +63,10 @@ find_package(catkin REQUIRED COMPONENTS roscpp std_msgs)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs  # Or other packages containing msgs
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -133,6 +132,7 @@ include ${catkin_INCLUDE_DIRS}
 # add_executable(${PROJECT_NAME}_node src/agitr_node.cpp)
 add_executable(pub src/publisher.cpp)
 add_executable(sub src/subscriber.cpp)
+add_executable(strChange src/stringChangeClient.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -143,6 +143,7 @@ add_executable(sub src/subscriber.cpp)
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(strChange beginner_tutorials_gencpp)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
@@ -150,7 +151,7 @@ add_executable(sub src/subscriber.cpp)
 # )
 target_link_libraries(pub ${catkin_LIBRARIES})
 target_link_libraries(sub ${catkin_LIBRARIES})
-
+target_link_libraries(strChange ${catkin_LIBRARIES})
 
 #############
 ## Install ##
