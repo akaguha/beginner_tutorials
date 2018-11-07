@@ -1,22 +1,22 @@
 <launch>
-	<arg
-		name = "freq"
-		default = "5"
-	/> 
-	<node
-		pkg="beginner_tutorials"
-        name="talker"
-		type="pub"
-		output = "screen"
-		required = "true"
-		args = "$(arg freq)"
-	/>
-	<node
-		pkg="beginner_tutorials"
-        name="listener"
-		type="sub"
-		output = "screen"
-		respawn = "true"
-		launch-prefix = "xterm -e"
-	/>
+  <arg
+    name = "freq"
+    default = "5"
+  /> 
+  <node
+    pkg="beginner_tutorials"
+    name="talker"
+    type="pub"
+    output = "screen"
+    required = "true"
+    args = "$(arg freq)"
+  />
+  <node
+    pkg="beginner_tutorials"
+    name="listener"
+    type="sub"
+    output = "screen"
+    respawn = "true"
+    launch-prefix = "xterm -e"
+  />
 </launch>

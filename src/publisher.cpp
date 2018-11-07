@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
   // Tells master about message type and the topic on which message is published
   ros::Publisher pub = nh.advertise<std_msgs::String>("stringPub", 1000);
 
-  int freq;
+  int freq;  //  holds the ROS looping frequency
   if (argc == 2) {  //  check for the number of arguments passed
     if (std::atoi(argv[1]) <= 0) {
       ROS_ERROR_STREAM("Entered frequency value is either negative or zero");
