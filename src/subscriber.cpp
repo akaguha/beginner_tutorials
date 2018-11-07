@@ -26,7 +26,7 @@
  *  @author  Akash Guha
  *  @copyright MIT License
  *
- *  @brief ENPM808X, Programming Assignment: ROS Publisher/Subscriber
+ *  @brief ENPM808X, Programming Assignment: ROS Services, Logging and Launch files
  *
  *  @section DESCRIPTION
  *

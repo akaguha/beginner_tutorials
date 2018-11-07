@@ -81,7 +81,21 @@ int main(int argc, char **argv) {
   // Tells master about message type and the topic on which message is published
   ros::Publisher pub = nh.advertise<std_msgs::String>("stringPub", 1000);
 
-  ros::Rate rate(2);  // loop at 2Hz until the node is shut down
+  int freq;
+  if (argc == 2) {  //  check for the number of arguments passed
+    if (std::atoi(argv[1]) <= 0) {
+      ROS_ERROR_STREAM("Entered frequency value is either negative or zero");
+      ROS_INFO_STREAM("Setting the frequency to the default value");
+      } else {
+          freq = std::atoi(argv[1]);
+          ROS_DEBUG_STREAM("User entered frequency value is " << freq);
+      }
+  } else {
+      ROS_FATAL_STREAM("Single frequency argument required");
+      return 1;  //  terminate the node
+  }
+
+  ros::Rate rate(freq);  // loop at 'freq'Hz until the node is shut down
   while (ros::ok()) {  // check to loop until the node is up
     std_msgs::String msg;  // variable to store string
     std::stringstream ss;
