@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
   beginner_tutorials::changeString::Request req;  //  request object
   beginner_tutorials::changeString::Response resp;  //  reponse object
   if (argc == 1) {  //  loop when no arguments are passed
-    ROS_WARN_STREAM("Text to be changed not passed, changing string "
+    ROS_ERROR_STREAM("Text to be changed not passed, changing string "
   "to default...");
     req.str = "Akash";  //  assign values to request data members
   } else {
