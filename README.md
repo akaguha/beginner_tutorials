@@ -47,7 +47,7 @@ source devel/setup.bash
 Clone the package in the src folder and build.
 ```
 cd src/
-git clone --recursive https://github.com/akaguha/beginner_tutorials.git
+git clone --recursive https://github.com/akaguha/beginner_tutorials.git --branch Week10_HW
 cd ..
 catkin_make
 ```
