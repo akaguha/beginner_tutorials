@@ -22,7 +22,7 @@
  *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  *  DEALINGS IN THE SOFTWARE.
  *
- *  @file    subscriber.cpp
+ *  @file    stringChangeClient.cpp
  *  @author  Akash Guha
  *  @copyright MIT License
  *
@@ -30,21 +30,14 @@
  *
  *  @section DESCRIPTION
  *
- *  This program is a subscriber node in C++
+ *  This program is a service client to change the string passed by the publisher node
  *
  */
 #include <ros/ros.h>
+#include <beginner_tutorials/changeString.h>  //  srv class for the service
 #include <std_msgs/String.h>
+#include <stdlib.h>
 
-/**
- * @brief      Callback function that will get called when a 
- *				new message has arrived
- *
- * @param  msg, message received from the publisher
- */
-void stringReceivedCallback(const std_msgs::String::ConstPtr &msg) {
-  ROS_INFO_STREAM("Hello " << msg->data);
-}
 /**
  * @brief      main function
  *
@@ -54,16 +47,31 @@ void stringReceivedCallback(const std_msgs::String::ConstPtr &msg) {
  * @return     int, program execution status
  */
 int main(int argc, char **argv) {
-  ros::init(argc, argv, "stringListener");  // initialize ROS
-  ros::NodeHandle nh;  // handle to this process node
+  ros::init(argc, argv, "changeStringClient");  // initialize ROS
+  ros::NodeHandle nh;  //  handle to this process node
+  //  create a client object for the string change service.
+  //  Need to specify the data type of the service
+  //  and its name
+  ros::ServiceClient client = nh.serviceClient<beginner_tutorials::changeString>
+  ("changeString");
 
-  // Subscribe to the stringPub topic with the master
-  // ROS will call the stringReceivedCallback() function whenever a
-  // new message arrives
-  ros::Subscriber sub = nh.subscribe("stringPub", 1000,
-  &stringReceivedCallback);
+  beginner_tutorials::changeString::Request req;  //  request object
+  beginner_tutorials::changeString::Response resp;  //  reponse object
+  if (argc == 1) {  //  loop when no arguments are passed
+    ROS_WARN_STREAM("Text to be changed not passed, changing string "
+  "to default...");
+    req.str = "Akash";  //  assign values to request data members
+  } else {
+    req.str = argv[1];  //  assign the argument value to request data member
+  }
+  bool success = client.call(req, resp);  //  calling the service
 
-  ros::spin();  // gives control to ROS until the node shuts down
-
+  //  check the success of the service call and use the response data member
+  if (success) {
+    ROS_INFO_STREAM("Changed string: " << resp.str);
+  } else {
+    ROS_FATAL_STREAM("Failed to call service");
+    return 1;
+  }
   return 0;
 }
