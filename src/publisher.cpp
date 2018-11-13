@@ -39,8 +39,9 @@
 #include <stdlib.h>
 #include <beginner_tutorials/changeString.h>  //  srv class for the service
 #include <ros/console.h>  //  to implement logging features
+#include <tf/transform_broadcaster.h>  //  package provides an implementation of a TransformBroadcaster
 
-extern std::string pubTxt = "Akash";  //  default string to be published
+std::string pubTxt = "Akash";  //  default string to be published
 
 /**
  * @brief      changeTxt
@@ -69,6 +70,10 @@ bool changeTxt(beginner_tutorials::changeString::Request& req,
 int main(int argc, char **argv) {
   ros::init(argc, argv, "publishString");  // initialize ROS
   ros::NodeHandle nh;  // handle to this process node
+
+  static tf::TransformBroadcaster br;  //  create a TransformBroadcaster object
+  tf::Transform transform;
+  tf::Quaternion q;
 
   //  setting the logger level to DEBUG
   if (ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME,
@@ -101,8 +106,16 @@ int main(int argc, char **argv) {
     std::stringstream ss;
     ss << pubTxt;
     msg.data = ss.str();
+    double x = 5.0;
+    double y = 5.0;
+    double theta = 30;
 
     pub.publish(msg);  // publish msg
+
+    transform.setOrigin(tf::Vector3(x,y,0.0));
+    q.setRPY(0,0,theta);
+    transform.setRotation(q);
+	br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "talk"));
 
     // ROS_INFO_STREAM(msg.data); // print message on the console using rosout
     ros::spinOnce();
