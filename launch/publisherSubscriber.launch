@@ -2,7 +2,8 @@
   <arg
     name = "freq"
     default = "5"
-  /> 
+  />
+  <arg name="record_bag" default="false"/> 
   <node
     pkg="beginner_tutorials"
     name="talker"
@@ -18,5 +19,12 @@
     output = "screen"
     respawn = "true"
     launch-prefix = "xterm -e"
+  />
+  <node
+    pkg="rosbag"
+    name="record"
+    type="record"
+    args="--output-name=$(find beginner_tutorials)/results/allTopics.bag --all"
+    if="$(arg record_bag)"
   />
 </launch>
