@@ -1,4 +1,4 @@
-# ENPM808X - Programming Assignment: ROS Publisher/Subscriber
+# ENPM808X - Programming Assignment - ROS TF, unit testing, bag files
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 # License
@@ -27,12 +27,16 @@ SOFTWARE.
 ```
 
 # Overview
-Project to write a talker and listener node, create ROS service client and server to modify text published by talker, create launch file for both talker and listener nodes and to make use of all five ROS logging levels.
+Project to write a talker and listener node, create ROS service client and server to modify text published by talker, create launch file for both talker and listener nodes and to make use of all five ROS logging levels. The Talker node broadcasts a tf frame called /talk with parent /world. Unit tests written using gtest and rostest for testing ROS service call. Recording all published messages in a bag file.
 
 # Dependencies
-Following dependencies need to be installed before running the above package
+Following dependencies need to be installed before running the packages
 - Ubuntu 16.04
 - ROS Kinetic
+- catkin
+- roscpp
+- message_generation
+- tf
 
 # Build Instructions
 Create and build a catkin workspace.
@@ -48,7 +52,7 @@ source devel/setup.bash
 Clone the package in the src folder and build
 ```
 cd src/
-git clone --recursive https://github.com/akaguha/beginner_tutorials.git
+git clone --recursive https://github.com/akaguha/beginner_tutorials.git --branch Week11_HW
 cd ..
 catkin_make
 ```
@@ -116,4 +120,105 @@ To start rqt_console and logger_level GUI.
 ```
 rosrun rqt_console rqt_console
 rosrun rqt_logger_level rqt_logger_level
+```
+
+# Rrecording and Playing back data
+To record all published topics in a bag file through a launch file run the following command
+```
+roslaunch beginner_tutorials publisherSubscriber.launch freq:=1 record_bag:=true
+```
+To play back the recorded messages in the bag file
+```
+cd <path to catkin_ws>/src/beginner_tutorials/results
+rosbag play allTopics.bag
+```
+Output on the terminal
+```
+Waiting 0.2 seconds after advertising topics... done.
+
+Hit space to toggle paused, or 's' to step.
+ [DELAYED]  Bag Time: 1542159242.490944   Duration: 0.000000 / 79.912262   Delay [RUNNING]  Bag Time: 1542159242.490944   Duration: 0.000000 / 79.912262         [RUNNING]  Bag Time: 1542159242.490944   Duration: 0.000000 / 79.912262         [RUNNING]  Bag Time: 1542159242.491358   Duration: 0.000414 / 79.912262         [RUNNING]  Bag Time: 1542159242.591543   Duration: 0.100599 / 79.912262         [RUNNING]  Bag Time: 1542159242.691735   Duration: 0.200791 / 79.912262         [RUNNING]  Bag Time: 1542159242.708552   Duration: 0.217608 / 79.912262         [RUNNING]  Bag Time: 1542159242.709033   Duration: 0.218090 / 79.912262         [RUNNING]  Bag Time: 1542159242.809177   Duration: 0.318234 / 79.912262         [RUNNING]  Bag Time: 1542159242.909394   Duration: 0.418450 / 79.912262         [RUNNING]  Bag Time: 1542159243.009611   Duration: 0.518667 / 79.912262         [RUNNING]  Bag Time: 1542159243.109828   Duration: 0.618884 / 79.912262         [RUNNING]  Bag Time: 1542159243.210021   Duration: 0.719077 / 79.912262         [RUNNING]  Bag Time: 1542159243.310202
+ ```
+ In a different terminal run the following commands to see the published string
+ ```
+ rostopic echo /stringPub
+ ```
+ or
+ ```
+  rosrun beginner_tutorials sub
+  ```
+
+# TF Broadcaster
+The talker node broadcasts a tf frame called /talk with parent /world. Run the launch file in a terminal
+```
+roslaunch beginner_tutorials publisherSubscriber.launch freq:=1
+```
+To see the broadcasted tf message using tf_echo,run
+```
+rosrun tf tf_echo /world /talk
+```
+Output on the terminal
+```
+At time 1542159322.402
+- Translation: [5.000, 5.000, 0.000]
+- Rotation: in Quaternion [0.000, 0.000, -0.650, 0.760]
+            in RPY (radian) [0.000, 0.000, -1.416]
+            in RPY (degree) [0.000, 0.000, -81.127]
+At time 1542159322.402
+- Translation: [5.000, 5.000, 0.000]
+- Rotation: in Quaternion [0.000, 0.000, -0.650, 0.760]
+            in RPY (radian) [0.000, 0.000, -1.416]
+            in RPY (degree) [0.000, 0.000, -81.127]
+At time 1542159322.402
+- Translation: [5.000, 5.000, 0.000]
+- Rotation: in Quaternion [0.000, 0.000, -0.650, 0.760]
+            in RPY (radian) [0.000, 0.000, -1.416]
+            in RPY (degree) [0.000, 0.000, -81.127]
+At time 1542159322.402
+- Translation: [5.000, 5.000, 0.000]
+- Rotation: in Quaternion [0.000, 0.000, -0.650, 0.760]
+            in RPY (radian) [0.000, 0.000, -1.416]
+```
+Using view_frames creates a diagram of the frames being broadcast by tf over ROS.
+```
+rosrun tf view_frames
+```
+To view the tree
+```
+evince frames.pdf
+```
+Using rqt_tf_tree visualizing the tree of frames being broadcast over ROS.
+```
+rosrun rqt_tf_tree rqt_tf_tree
+```
+
+# Integration Testing using rostest
+To run unit test for ROS service call
+```
+cd <path to catkin_ws>
+catkin_make run_tests
+```
+Output on terminal
+```
+[ROSUNIT] Outputting test results to /home/akash/ENPM808X_ROS_workspace/build/test_results/beginner_tutorials/rostest-test_talkerUtest.xml
+[Testcase: testtalkerTester] ... ok
+
+[ROSTEST]-----------------------------------------------------------------------
+
+[beginner_tutorials.rosunit-talkerTester/changeString][passed]
+
+SUMMARY
+ * RESULT: SUCCESS
+ * TESTS: 1
+ * ERRORS: 0
+ * FAILURES: 0
+
+rostest log file is in /home/akash/.ros/log/rostest-akash-Inspiron-7577-16123.log
+-- run_tests.py: verify result "/home/akash/ENPM808X_ROS_workspace/build/test_results/beginner_tutorials/rostest-test_talkerUtest.xml"
+```
+To run the unit tests using the launch file, run the following commands in the catkin workspace after all the packages are succesfully built.
+```
+cd <path to catkin_ws>
+source devel/setup.bash
+rostest beginner_tutorials talkerUtest.launch 
 ```
