@@ -1,7 +1,7 @@
 Done processing ./src/subscriber.cpp
 Done processing ./src/stringChangeClient.cpp
-./src/publisher.cpp:53:  Is this a non-const reference? If so, make const or use a pointer: beginner_tutorials::changeString::Request& req  [runtime/references] [2]
-./src/publisher.cpp:54:  Is this a non-const reference? If so, make const or use a pointer: beginner_tutorials::changeString::Response& res  [runtime/references] [2]
+./src/publisher.cpp:59:  Is this a non-const reference? If so, make const or use a pointer: beginner_tutorials::changeString::Request& req  [runtime/references] [2]
+./src/publisher.cpp:60:  Is this a non-const reference? If so, make const or use a pointer: beginner_tutorials::changeString::Response& res  [runtime/references] [2]
 Done processing ./src/publisher.cpp
+Done processing ./test/talkerUtest.cpp
 Total errors found: 2
-

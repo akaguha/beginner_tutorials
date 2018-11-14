@@ -26,12 +26,13 @@
  *  @author  Akash Guha
  *  @copyright MIT License
  *
- *  @brief ENPM808X, Programming Assignment: ROS Services, Logging and Launch files
+ *  @brief ENPM808X, Programming Assignment - ROS TF, unit testing, bag files
  *
  *  @section DESCRIPTION
  *
  *  This program publishes a string on stringPub topic for the subscrber node to print a
- *  message on the console. This also acts as a service server for a string change request. 
+ *  message on the console. This also acts as a service server for a string change request.
+ *  Also broadcasts a tf frame. 
  *
  */
 #include <ros/ros.h>
@@ -41,7 +42,11 @@
 #include <ros/console.h>  //  to implement logging features
 #include <tf/transform_broadcaster.h>  //  package provides an implementation of a TransformBroadcaster
 
-std::string pubTxt = "Akash";  //  default string to be published
+struct publishStr {
+  std::string pubTxt = "Akash";  //  default string to be published
+};
+
+publishStr s;
 
 /**
  * @brief      changeTxt
@@ -53,9 +58,9 @@ std::string pubTxt = "Akash";  //  default string to be published
  */
 bool changeTxt(beginner_tutorials::changeString::Request& req,
   beginner_tutorials::changeString::Response& res) {
-  pubTxt = req.str;  //  assign requested string to publish variable
-  res.str = pubTxt;  //  assigning value to response data member
-  ROS_DEBUG_STREAM("Message to be published is, " << pubTxt);
+  s.pubTxt = req.str;  //  assign requested string to publish variable
+  res.str = s.pubTxt;  //  assigning value to response data member
+  ROS_DEBUG_STREAM("Message to be published is, " << s.pubTxt);
   return true;
 }
 
@@ -72,8 +77,8 @@ int main(int argc, char **argv) {
   ros::NodeHandle nh;  // handle to this process node
 
   static tf::TransformBroadcaster br;  //  create a TransformBroadcaster object
-  tf::Transform transform;
-  tf::Quaternion q;
+  tf::Transform transform;  //  Create a transform object
+  tf::Quaternion q;  //  Create a quaternion
 
   //  setting the logger level to DEBUG
   if (ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME,
@@ -104,18 +109,21 @@ int main(int argc, char **argv) {
   while (ros::ok()) {  // check to loop until the node is up
     std_msgs::String msg;  // variable to store string
     std::stringstream ss;
-    ss << pubTxt;
+    ss << s.pubTxt;
     msg.data = ss.str();
+    //  Variables to hold non-zero translation
     double x = 5.0;
     double y = 5.0;
+    //  Variable to hold non-zero rotation
     double theta = 30;
 
-    pub.publish(msg);  // publish msg
+    pub.publish(msg);  // publish message
 
-    transform.setOrigin(tf::Vector3(x,y,0.0));
-    q.setRPY(0,0,theta);
-    transform.setRotation(q);
-	br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "talk"));
+    transform.setOrigin(tf::Vector3(x, y, 0.0));  //  Set non-zero translation
+    q.setRPY(0, 0, theta);
+    transform.setRotation(q);  //  Set the rotation
+    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(),
+    "world", "talk"));
 
     // ROS_INFO_STREAM(msg.data); // print message on the console using rosout
     ros::spinOnce();
